@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import database from "../dataBase.js";
-import joi from "joi";
 
 export async function signup(req, res) {
   const { name, email, password } = req.body;
@@ -33,13 +32,10 @@ export async function signup(req, res) {
 
 export async function signin(req, res) {
   const { email, password } = req.body;
-  //procurar email no banco de dados para gerar token
   try {
     const user = await database.collection("users").findOne({ email: email });
     if (user && bcrypt.compareSync(password, user.password)) {
-      //preciso gerar um token
       const token = uuid();
-      //criar uma sessão
       await database.collection("session").insertOne({
         userId: user._id,
         token,
@@ -59,9 +55,7 @@ export async function signin(req, res) {
 }
 
 export async function logout(req, res) {
-  const token = req.header; // um objto com o token
-  //token = authorization?.replace("Bearer", "").trim(); //remove espaços em branco
-  //const token = authorization?.replace("Bearer", "").trim();
+  const token = req.header;
   console.log("token do back ", token);
   if (!token) {
     res.sendStatus(403);

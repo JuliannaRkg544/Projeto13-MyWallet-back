@@ -1,10 +1,14 @@
 import { Router } from "express";
-import { addEntry } from "../controllers/transactionsController.js";
-
-//criar um roteador e rotear
+import {
+  addTransaction,
+  getTransactions,
+} from "../controllers/transactionsController.js";
+import { getUser } from "../middlewares/userMiddleare.js";
 
 const transRouter = Router();
+transRouter.use(getUser);
 
-transRouter.post("/entries", addEntry);
+transRouter.post("/transactions", addTransaction);
+transRouter.get("/transactions", getTransactions);
 
 export default transRouter;

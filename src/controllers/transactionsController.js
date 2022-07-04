@@ -1,24 +1,33 @@
-import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
 import database from "../dataBase.js";
-import joi from "joi";
 
-export async function addEntry(req, res) {
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer", "").trim();
+export async function addTransaction(req, res) {
   const task = req.body;
+  const { user } = res.locals;
 
-  console.log(token);
-  const entry = {
-    value: task.value,
-    desc: task.desc,
-    type: task.type,
-    user: token,
-  };
   try {
-    await database.collection("transactions").insertOne(entry);
+    //await database.collection("session").findOne({ userId: user._id });
+    await database.collection("transactions").insertOne({
+      value: task.value,
+      desc: task.desc,
+      type: task.type,
+      userId: user._id,
+    });
     res.sendStatus(201);
   } catch (error) {
-    console.log("erro ao cadastar entrada", error);
+    console.log("erro ao cadastar transação", error);
+    res.sendStatus(500);
+  }
+}
+export async function getTransactions(req, res) {
+  const { user } = res.locals;
+
+  try {
+    const transactions = await database
+      .collection("transactions")
+      .find({ userId: user._id });
+    res.status(200).send(transactions);
+  } catch (error) {
+    console.log("erro no get das transações ", error);
+    res.sendStatus(500);
   }
 }
