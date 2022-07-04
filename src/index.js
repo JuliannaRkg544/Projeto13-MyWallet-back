@@ -15,6 +15,6 @@ server.use(json());
 server.use(authRouter);
 server.use(transRouter);
 
-server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log(chalk.blue.bold(`Servidor no ar`));
 });
