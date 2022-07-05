@@ -24,7 +24,8 @@ export async function getTransactions(req, res) {
   try {
     const transactions = await database
       .collection("transactions")
-      .find({ userId: user._id });
+      .find({ userId: user._id })
+      .toArray();
     res.status(200).send(transactions);
   } catch (error) {
     console.log("erro no get das transações ", error);
